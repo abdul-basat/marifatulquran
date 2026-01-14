@@ -1,0 +1,7 @@
+# Robots.txt for Marifat Ul Quran Female Online Academy
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://marifatulquran.com/sitemap.xml
