@@ -11,6 +11,7 @@ import Courses from "@/pages/Courses";
 import Contact from "@/pages/Contact";
 import Results from "@/pages/Results";
 import Blog from "@/pages/Blog";
+import Gallery from "@/pages/Gallery";
 import NotFound from "@/pages/NotFound";
 import ScrollToTop from "@/components/ScrollToTop";
 
@@ -25,6 +26,7 @@ function AppRouter() {
         <Route path="/courses" component={Courses} />
         <Route path="/results" component={Results} />
         <Route path="/contact" component={Contact} />
+        <Route path="/gallery" component={Gallery} />
         <Route component={Home} />
       </Switch>
     </Router>

@@ -1,342 +1,213 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { GraduationCap, BookOpen, Users, Phone } from "lucide-react";
 import pattern from "@/assets/pattern.jpg";
 import SEO from "@/components/SEO";
+import CourseCard from "@/components/CourseCard";
+import type { CourseData } from "@/components/CourseCard";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Courses() {
-   const whatsappNumber = "923181955634";
+   const [activeFilter, setActiveFilter] = useState("All");
 
-   const getWhatsAppLink = (courseName: string) => {
-      const message = `السلام علیکم ورحمۃ اللہ وبرکاتہ! مجھے کورس *${courseName}* میں داخلہ مطلوب ہے۔`;
-      return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+   const fadeInUp: Variants = {
+      hidden: { opacity: 0, y: 30 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
    };
 
-   const courses = [
+   const staggerContainer: Variants = {
+      hidden: { opacity: 0 },
+      visible: {
+         opacity: 1,
+         transition: {
+            staggerChildren: 0.1
+         }
+      }
+   };
+
+   const categories = ["All", "Scholar Course", "Quranic Studies", "Specialization", "Short Courses"];
+
+   const courses: (CourseData & { category: string })[] = [
       {
-         title: "درسِ نظامی",
+         name: "درسِ نظامی",
+         description: "مستند اور مکمل دینی نصاب",
          duration: "8 سال",
-         eligibility: "وہ طلبہ و طالبات جن کی تعلیم بی اے سے کم ہو\nجیسے: مڈل، میٹرک، ایف اے",
-         icon: GraduationCap,
+         eligibility: "مڈل، میٹرک، ایف اے",
+         mode: "Online",
+         teachers: "Male/Female separate",
+         category: "Scholar Course",
+         image: "quran-hadees classes.jpg"
       },
       {
-         title: "کلیۃ الشریعہ (عالم / عالمہ کورس)",
-         duration: "",
-         eligibility: "کم از کم بی اے پاس طلبہ و طالبات",
-         icon: BookOpen,
+         name: "کلیۃُ الشریعہ (عالم / عالمہ)",
+         description: "BS سسٹم کے مطابق چار سالہ عالم کورس",
+         duration: "4 سال (8 سیمسٹر)",
+         eligibility: "BA پاس",
+         fee: "3000 روپے ماہانہ",
+         mode: "Online",
+         teachers: "Male/Female separate",
+         category: "Scholar Course",
+         image: "4-year-aalima-course.jpg"
       },
       {
-         title: "قاری / قاریہ کورس",
-         duration: "",
+         name: "تخصص فی الفقہ (مفتی / مفتیہ)",
+         description: "افتاء اور فقہی تحقیق کی اعلیٰ تخصص",
+         duration: "2 سال",
+         eligibility: "درسِ نظامی مکمل",
+         fee: "3000 روپے ماہانہ",
+         mode: "Online",
+         teachers: "Male/Female separate",
+         category: "Specialization",
+         image: "takhassus-fil-fiqh-course.jpg"
+      },
+      {
+         name: "قاری / قاریہ کورس",
+         description: "مکمل تجوید، قرأت اور فقہی اصول",
+         duration: "2 سال",
          eligibility: "پانچویں جماعت پاس",
-         icon: BookOpen,
+         mode: "Online",
+         teachers: "Male/Female separate",
+         category: "Quranic Studies",
+         image: "tajweed-course.jpg"
       },
       {
-         title: "فیضانِ شریعت کورس",
-         duration: "",
-         eligibility: "پانچویں جماعت پاس طلبہ و طالبات",
-         icon: BookOpen,
+         name: "ناظرہ قرآن (تجوید کے ساتھ)",
+         description: "قرآن مجید درست تجوید کے ساتھ پڑھنا",
+         duration: "6 ماہ",
+         eligibility: "ہر مسلمان",
+         fee: "2000 روپے ماہانہ",
+         mode: "Online",
+         category: "Quranic Studies",
+         image: "faizan-tajweed-course.jpg"
       },
       {
-         title: "ناظرہ قرآن کورس",
-         duration: "",
-         eligibility: "ہر مسلمان کے لیے",
-         icon: BookOpen,
+         name: "مدنی قاعدہ کورس",
+         description: "قرآن پڑھنے کی مضبوط بنیاد",
+         duration: "3 ماہ (یا صلاحیت کے مطابق)",
+         eligibility: "ہر عمر",
+         fee: "1500 روپے ماہانہ",
+         mode: "Online",
+         oneToOne: "Available",
+         category: "Quranic Studies",
+         image: "admission-open.jpg"
       },
       {
-         title: "مدنی قاعدہ کورس (ابتدائی)",
-         duration: "",
-         eligibility: "ہر مسلمان کے لیے",
-         icon: BookOpen,
+         name: "حفظِ قرآن",
+         description: "مکمل قرآن مجید حفظ کرنے کا کورس",
+         duration: "طالب علم کی صلاحیت کے مطابق",
+         eligibility: "ناظرہ مکمل اور درست",
+         mode: "Online",
+         teachers: "Male/Female separate",
+         category: "Quranic Studies",
+         image: "arbi-ibarat-course.jpg"
       },
       {
-         title: "حفظِ قرآن کورس",
-         duration: "",
-         eligibility: "جن کا ناظرہ مکمل اور درست ہو",
-         icon: BookOpen,
+         name: "فیضانِ شریعت کورس",
+         description: "بنیادی دینی اور شرعی تعلیم",
+         duration: "مناسب مدت",
+         eligibility: "پانچویں جماعت پاس",
+         mode: "Online",
+         category: "Short Courses",
+         image: "faizan-shriat-course.jpg"
       },
       {
-         title: "تخصص فی الفقہ (مفتی / مفتیہ)",
-         duration: "",
-         eligibility: "درسِ نظامی کسی مستند سنی بورڈ سے مکمل ہو",
-         icon: GraduationCap,
-         category: "تخصصات"
+         name: "نعت کورس",
+         description: "نعت خوانی اور آواز کی تربیت",
+         duration: "مناسب مدت",
+         eligibility: "شوق رکھنے والے",
+         mode: "Online",
+         category: "Short Courses",
+         image: "naat-course.jpg"
       },
       {
-         title: "تخصص فی اللغۃ العربیہ",
-         duration: "",
-         eligibility: "درسِ نظامی کسی مستند سنی بورڈ سے مکمل ہو",
-         icon: GraduationCap,
-         category: "تخصصات"
+         name: "تلاوت و لہجات",
+         description: "آواز، لہجہ اور روانی کی اصلاح",
+         duration: "مناسب مدت",
+         eligibility: "اچھی آواز، درست ناظرہ",
+         mode: "Online",
+         category: "Short Courses",
+         image: "tajweed-lehjat-course.jpg"
       },
       {
-         title: "تخصص فی الحدیث",
-         duration: "",
-         eligibility: "درسِ نظامی کسی مستند سنی بورڈ سے مکمل ہو",
-         icon: GraduationCap,
-         category: "تخصصات"
+         name: "امامت کورس (صرف مرد حضرات)",
+         description: "مسجد کی امامت کی مکمل عملی تربیت",
+         duration: "6 ماہ",
+         eligibility: "کم از کم پانچویں جماعت",
+         fee: "1500 روپے ماہانہ",
+         mode: "Online",
+         gender: "Male only",
+         category: "Short Courses",
+         image: "imamat-course.jpg"
       },
       {
-         title: "تخصص فی التوقیت",
-         duration: "",
-         eligibility: "درسِ نظامی کسی مستند سنی بورڈ سے مکمل ہو",
-         icon: GraduationCap,
-         category: "تخصصات"
-      },
-      {
-         title: "تخصص فی الدعوہ",
-         duration: "",
-         eligibility: "درسِ نظامی کسی مستند سنی بورڈ سے مکمل ہو",
-         icon: GraduationCap,
-         category: "تخصصات"
-      },
-      {
-         title: "نعت کورس",
-         duration: "",
-         eligibility: "نعت پڑھنے کا شوق رکھنے والے",
-         icon: BookOpen,
-      },
-      {
-         title: "تلاوت و لہجات کورس",
-         duration: "",
-         eligibility: "اچھی آواز والے\nناظرہ بالکل درست ہو",
-         icon: BookOpen,
-      },
-      {
-         title: "امامت کورس",
-         duration: "",
-         eligibility: "صرف مرد حضرات\nکم از کم پانچویں جماعت تک تعلیم یافتہ",
-         icon: Users,
-      },
+         name: "Online Tafseer-ul-Qur’an Course",
+         description: "روزمرہ زندگی سے جڑی قرآن فہمی",
+         duration: "1 گھنٹہ فی کلاس (روزانہ / ہفتہ وار)",
+         eligibility: "Worldwide",
+         language: "اردو + ضرورت کے مطابق انگلش",
+         mode: "Online (Google Meet)",
+         audience: "Worldwide",
+         category: "Quranic Studies",
+         image: "tafseer-course.jpg"
+      }
    ];
+
+   const filteredCourses = activeFilter === "All"
+      ? courses
+      : courses.filter(course => course.category === activeFilter);
 
    return (
       <div className="min-h-screen bg-background flex flex-col">
-         <SEO title="Courses - کورسز" description="Explore our online Islamic courses - معرفۃ القرآن للبنین و للبنات" />
+         <SEO title="Courses" description="Browse our academic programs including Dars-e-Nizami, Hifz-ul-Quran, Tajweed, and short Islamic courses." />
          <Header />
          <main className="flex-1">
-            {/* Page Header with Urdu */}
+            {/* Page Header */}
             <section className="bg-secondary text-primary py-20 relative overflow-hidden">
                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url(${pattern})` }} />
-               <div className="container relative z-10 text-center">
-                  <h1 className="text-4xl md:text-6xl font-heading font-bold mb-4">دستیاب کورسز</h1>
-                  <p className="text-lg opacity-90 max-w-3xl mx-auto" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2.5' }}>
-                     معرفۃ القرآن للبنین و للبنات - آن لائن اکیڈمی
-                  </p>
+               <div className="container px-4 relative z-10 text-center">
+                  <h1 className="text-4xl md:text-6xl font-heading font-bold mb-4">Academic Programs</h1>
+                  <p className="text-lg opacity-90 max-w-2xl mx-auto">Explore our diverse range of courses designed to connect you with sacred knowledge.</p>
                </div>
             </section>
 
-            {/* Introduction Section */}
-            <section className="py-16 bg-gradient-to-b from-muted/30 to-background">
-               <div className="container max-w-4xl">
-                  <div className="text-center space-y-6" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2.8', fontSize: '1.35rem' }}>
-                     <h2 className="text-3xl md:text-4xl font-bold mb-8" style={{ fontFamily: "'Mehr Nastaleeq', serif" }}>
-                        بسم اللہ الرحمن الرحیم
-                     </h2>
-
-                     <div className="bg-card p-8 rounded-xl shadow-lg border-2 border-secondary/20 space-y-6">
-                        <p className="text-primary font-semibold">
-                           الحمدللہ!
-                        </p>
-                        <p>
-                           اگر آپ یا آپ کے گھر کا کوئی فرد گھر بیٹھے مستند دینی تعلیم حاصل کرنا چاہتے ہیں تو یہ پیغام آپ کے لیے ہے۔
-                        </p>
-                        <p>
-                           ہماری آن لائن اکیڈمی <span className="font-bold text-primary">معرفۃ القرآن للبنین و للبنات</span> ڈیرہ اسماعیل خان سے طلبہ و طالبات کو ایک منظم، بااعتماد اور انتہائی سستا دینی تعلیمی نظام فراہم کر رہی ہے۔
-                        </p>
-                        <p className="text-lg font-semibold text-secondary">
-                           آپ گھر بیٹھے علمِ دین حاصل کر سکتے ہیں۔
-                        </p>
-                     </div>
-                  </div>
-               </div>
-            </section>
-
-            {/* Key Features */}
+            {/* Course Grid */}
             <section className="py-16 bg-muted/30">
-               <div className="container max-w-5xl">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center mb-12" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl' }}>
-                     ✨ داخلے جاری ہیں ✨
-                  </h2>
-
-                  <div className="grid md:grid-cols-2 gap-6 mb-12">
-                     <div className="bg-card p-6 rounded-xl shadow-md border-l-4 border-l-primary" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2.5' }}>
-                        <h3 className="text-xl font-bold text-primary mb-4">علمِ دین کا سفر اب بہت آسان ہو گیا ہے</h3>
-                        <ul className="space-y-3">
-                           <li className="flex items-start gap-3">
-                              <span className="text-secondary text-xl">✔</span>
-                              <span>صرف ایک ٹچ موبائل ہونا چاہیے</span>
-                           </li>
-                           <li className="flex items-start gap-3">
-                              <span className="text-secondary text-xl">✔</span>
-                              <span>مکمل آن لائن نظام</span>
-                           </li>
-                           <li className="flex items-start gap-3">
-                              <span className="text-secondary text-xl">✔</span>
-                              <span>کسی ایپ یا دفتر آنے کی ضرورت نہیں</span>
-                           </li>
-                           <li className="flex items-start gap-3">
-                              <span className="text-secondary text-xl">✔</span>
-                              <span>واٹس ایپ پر صرف ایک میسج کریں اور اپنا داخلہ کنفرم کریں</span>
-                           </li>
-                        </ul>
-                     </div>
-
-                     <div className="bg-card p-6 rounded-xl shadow-md border-l-4 border-l-secondary" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2.5' }}>
-                        <h3 className="text-xl font-bold text-primary mb-4">💰 انتہائی سستا تعلیمی نظام</h3>
-                        <ul className="space-y-3">
-                           <li className="flex items-start gap-3">
-                              <span className="text-primary">•</span>
-                              <span>فیس عام لوگوں کی استطاعت کے مطابق ہے</span>
-                           </li>
-                           <li className="flex items-start gap-3">
-                              <span className="text-primary">•</span>
-                              <span>دیہات اور دور دراز علاقوں کے طلبہ و طالبات بھی آسانی سے پڑھ سکتے ہیں</span>
-                           </li>
-                           <li className="flex items-start gap-3">
-                              <span className="text-primary">•</span>
-                              <span>مرد و خواتین دونوں کے لیے یکساں سہولت</span>
-                           </li>
-                        </ul>
-                     </div>
-                  </div>
-
-                  <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-6 rounded-xl shadow-md" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2.5' }}>
-                     <h3 className="text-xl font-bold text-primary mb-4 text-center">🌸 علیحدہ اور بااخلاق نظام</h3>
-                     <div className="grid md:grid-cols-3 gap-4 text-center">
-                        <div className="bg-background/80 p-4 rounded-lg">
-                           <p>مردوں کے لیے مرد اساتذہ</p>
-                        </div>
-                        <div className="bg-background/80 p-4 rounded-lg">
-                           <p>خواتین کے لیے خواتین اساتذہ</p>
-                        </div>
-                        <div className="bg-background/80 p-4 rounded-lg">
-                           <p>مکمل باپردہ، بااخلاق اور اسلامی ماحول</p>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </section>
-
-            {/* Courses Grid */}
-            <section className="py-16">
-               <div className="container">
-                  <h2 className="text-3xl md:text-4xl font-bold text-center mb-4" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl' }}>
-                     📘 دستیاب کورسز کی مکمل تفصیل
-                  </h2>
-                  <p className="text-center text-muted-foreground mb-12" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', fontSize: '1.1rem' }}>
-                     تخصصات (اسپیشلائزیشن کورسز)
-                  </p>
-
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                     {courses.map((course, index) => {
-                        const Icon = course.icon;
-                        return (
-                           <Card key={index} className="flex flex-col h-full hover:shadow-xl transition-all hover:-translate-y-1 border-2 hover:border-secondary/50">
-                              <CardHeader className="pb-4">
-                                 <div className="flex items-start justify-between gap-4 mb-3">
-                                    <div className="bg-secondary/10 p-3 rounded-lg shrink-0">
-                                       <Icon className="h-6 w-6 text-secondary" />
-                                    </div>
-                                    {course.category && (
-                                       <Badge variant="secondary" className="shrink-0" style={{ fontFamily: "'Mehr Nastaleeq', serif", fontSize: '0.9rem' }}>
-                                          {course.category}
-                                       </Badge>
-                                    )}
-                                 </div>
-                                 <CardTitle
-                                    className="text-xl font-bold text-primary text-right leading-relaxed"
-                                    style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', fontSize: '1.4rem', lineHeight: '2' }}
-                                 >
-                                    {course.title}
-                                 </CardTitle>
-                              </CardHeader>
-
-                              <CardContent className="flex-1 space-y-4">
-                                 {course.duration && (
-                                    <div
-                                       className="bg-muted/50 p-3 rounded-lg text-right"
-                                       style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2' }}
-                                    >
-                                       <span className="text-sm text-muted-foreground">مدت: </span>
-                                       <span className="font-semibold text-primary">{course.duration}</span>
-                                    </div>
-                                 )}
-
-                                 <div className="space-y-2">
-                                    <p
-                                       className="text-sm font-semibold text-secondary text-right"
-                                       style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl' }}
-                                    >
-                                       🎓 اہلیت:
-                                    </p>
-                                    <p
-                                       className="text-sm text-muted-foreground text-right whitespace-pre-line"
-                                       style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2.2' }}
-                                    >
-                                       {course.eligibility}
-                                    </p>
-                                 </div>
-
-                                 <Button
-                                    asChild
-                                    className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold mt-4"
-                                    style={{ fontFamily: "'Mehr Nastaleeq', serif", fontSize: '1.1rem' }}
-                                 >
-                                    <a
-                                       href={getWhatsAppLink(course.title)}
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       className="flex items-center justify-center gap-2"
-                                    >
-                                       <Phone className="h-4 w-4" />
-                                       رابطہ کریں
-                                    </a>
-                                 </Button>
-                              </CardContent>
-                           </Card>
-                        );
-                     })}
-                  </div>
-               </div>
-            </section>
-
-            {/* Registration Info */}
-            <section className="py-16 bg-gradient-to-b from-muted/30 to-secondary/10">
-               <div className="container max-w-4xl">
-                  <div className="bg-card p-8 md:p-12 rounded-2xl shadow-xl border-2 border-secondary/30" style={{ fontFamily: "'Mehr Nastaleeq', serif", direction: 'rtl', lineHeight: '2.8' }}>
-                     <h3 className="text-2xl md:text-3xl font-bold text-primary mb-6 text-center">
-                        🏛 ادارے کی رجسٹریشن
-                     </h3>
-                     <p className="text-center text-lg mb-8">
-                        ہماری اکیڈمی دعوتِ اسلامی کے بورڈ <span className="font-bold text-secondary">کنز المدارس (انٹرنیشنل)</span> سے منسلک و ملحق ہے، اور تمام کورسز کی اسناد کنز المدارس بورڈ کے ذریعے دی جاتی ہیں۔
-                     </p>
-
-                     <div className="bg-gradient-to-r from-primary to-secondary p-8 rounded-xl text-white text-center space-y-4 shadow-lg">
-                        <Phone className="h-12 w-12 mx-auto mb-4" />
-                        <p className="text-xl font-bold">
-                           📩 بس واٹس ایپ پر ایک میسج کریں
-                        </p>
-                        <p className="text-lg">
-                           اور اپنا داخلہ کنفرم کریں
-                        </p>
+               <div className="container px-4 mb-10">
+                  <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+                     {categories.map((category) => (
                         <Button
-                           size="lg"
-                           className="bg-white text-primary hover:bg-white/90 font-bold mt-4"
-                           style={{ fontFamily: "'Mehr Nastaleeq', serif", fontSize: '1.2rem' }}
+                           key={category}
+                           variant={activeFilter === category ? "default" : "outline"}
+                           onClick={() => setActiveFilter(category)}
+                           className={`rounded-full px-6 py-2 transition-all duration-300 ${activeFilter === category
+                              ? "bg-primary text-white shadow-md hover:bg-primary/90"
+                              : "bg-background text-muted-foreground hover:text-primary hover:border-primary/50"
+                              }`}
                         >
-                           رابطہ کریں
+                           {category}
                         </Button>
-                     </div>
-
-                     <p className="text-center text-lg mt-8 text-secondary font-semibold">
-                        💬 علم حاصل کریں — عمل کی روشنی پھیلائیں 🌿
-                     </p>
+                     ))}
                   </div>
                </div>
+
+               <motion.div
+                  className="container px-4"
+                  variants={staggerContainer}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  key={activeFilter} // Re-animate on filter change
+               >
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                     {filteredCourses.map((course, index) => (
+                        <motion.div key={index} variants={fadeInUp} className="h-full">
+                           <CourseCard course={course} />
+                        </motion.div>
+                     ))}
+                  </div>
+               </motion.div>
             </section>
          </main>
          <Footer />

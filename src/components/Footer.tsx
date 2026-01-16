@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Facebook, Twitter, Youtube, Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, MessageCircle, Youtube, Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -14,8 +14,8 @@ export default function Footer() {
             </p>
             <div className="flex gap-4 pt-2">
               <a href="https://www.facebook.com/profile.php?id=61560569426109" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors"><Facebook className="h-5 w-5" /></a>
-              <a href="#" className="hover:text-secondary transition-colors"><Twitter className="h-5 w-5" /></a>
-              <a href="#" className="hover:text-secondary transition-colors"><Youtube className="h-5 w-5" /></a>
+              <a href="https://wa.me/923181955634" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors"><MessageCircle className="h-5 w-5" /></a>
+              <a href="https://www.youtube.com/@MadinaMunawra-m7s" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors"><Youtube className="h-5 w-5" /></a>
             </div>
           </div>
 
@@ -65,6 +65,17 @@ export default function Footer() {
 
         <div className="mt-12 pt-8 border-t border-primary-foreground/20 text-center text-sm opacity-80">
           <p>© {new Date().getFullYear()} Marifat Ul Quran. All rights reserved.</p>
+          <p className="mt-2">
+            Designed & Developed by{" "}
+            <a
+              href="https://wa.me/+923347232542?text=Salam,%20I%20neeed%20your%20website%20design%20services%20please."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-secondary font-bold hover:underline transition-all"
+            >
+              Abdul Basit
+            </a>
+          </p>
         </div>
       </div>
     </footer>

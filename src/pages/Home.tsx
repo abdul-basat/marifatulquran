@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Users, Globe, Award, CheckCircle, ArrowRight, Star, Quote } from "lucide-react";
+import { BookOpen, Users, Globe, Award, CheckCircle, ArrowRight, Star, Quote, GraduationCap, FileText, Info, Images, Phone } from "lucide-react";
 import { Link } from "wouter";
 import {
   Accordion,
@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
-import heroBgLight from "@/assets/hero-bg-light.jpg";
+import { useEffect, useRef, useState } from "react";
+import heroBgLight from "@/assets/hero-bg-light.png";
 import pattern from "@/assets/pattern.jpg";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import onlineLearning from "@/assets/online-learning.jpg";
@@ -22,6 +23,8 @@ import studentMale from "@/assets/student-male.jpg";
 import studentMale2 from "@/assets/student-male-2.jpg";
 import studentFemale from "@/assets/student-female.jpg";
 import SEO from "@/components/SEO";
+import CourseGallery from "@/components/CourseGallery";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   const fadeInUp: Variants = {
@@ -61,6 +64,36 @@ export default function Home() {
   };
 
   const headingText = "Marifat Ul Quran".split(" ");
+  const videoRef = useRef<HTMLDivElement>(null);
+  const [shouldAutoplay, setShouldAutoplay] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !shouldAutoplay) {
+            setShouldAutoplay(true);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, [shouldAutoplay]);
+
+  const videoId = "frZkUdcFUuE";
+  const videoSrc = shouldAutoplay
+    ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`
+    : `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -114,51 +147,189 @@ export default function Home() {
             >
               A beacon of sacred knowledge, illuminating hearts with the eternal light of the Quran and Sunnah.
             </motion.p>
+            {/* Quick Navigation Icon Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 1.0 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
+              className="mt-12"
             >
-              <Link href="/admissions">
-                <Button size="lg" className="bg-secondary text-primary hover:bg-secondary/90 font-bold text-lg px-8 h-12 shadow-xl hover:scale-105 transition-transform duration-300">
-                  Apply Now
-                </Button>
-              </Link>
-              <Link href="/courses">
-                <Button size="lg" className="bg-white/20 backdrop-blur-md text-white border-2 border-white/50 hover:bg-white/30 font-bold text-lg px-8 h-12 shadow-lg hover:scale-105 transition-transform duration-300">
-                  Explore Courses
-                </Button>
-              </Link>
+              <p className="text-center text-white/90 text-sm mb-6 font-medium">Quick Navigation</p>
+              <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                {[
+                  {
+                    name: "Admissions",
+                    href: "/admissions",
+                    icon: GraduationCap,
+                    bgColor: "bg-gradient-to-br from-amber-400/90 to-yellow-500/90",
+                    hoverBgColor: "group-hover:from-amber-300 group-hover:to-yellow-400",
+                    borderColors: "from-amber-400 via-yellow-500 to-orange-500"
+                  },
+                  {
+                    name: "Courses",
+                    href: "/courses",
+                    icon: BookOpen,
+                    bgColor: "bg-gradient-to-br from-blue-400/90 to-cyan-500/90",
+                    hoverBgColor: "group-hover:from-blue-300 group-hover:to-cyan-400",
+                    borderColors: "from-blue-400 via-cyan-500 to-teal-500"
+                  },
+                  {
+                    name: "Results",
+                    href: "/results",
+                    icon: FileText,
+                    bgColor: "bg-gradient-to-br from-green-400/90 to-emerald-500/90",
+                    hoverBgColor: "group-hover:from-green-300 group-hover:to-emerald-400",
+                    borderColors: "from-green-400 via-emerald-500 to-teal-500"
+                  },
+                  {
+                    name: "About",
+                    href: "/about",
+                    icon: Info,
+                    bgColor: "bg-gradient-to-br from-purple-400/90 to-pink-500/90",
+                    hoverBgColor: "group-hover:from-purple-300 group-hover:to-pink-400",
+                    borderColors: "from-purple-400 via-pink-500 to-rose-500"
+                  },
+                  {
+                    name: "Gallery",
+                    href: "/gallery",
+                    icon: Images,
+                    bgColor: "bg-gradient-to-br from-indigo-400/90 to-violet-500/90",
+                    hoverBgColor: "group-hover:from-indigo-300 group-hover:to-violet-400",
+                    borderColors: "from-indigo-400 via-violet-500 to-purple-500"
+                  },
+                  {
+                    name: "Contact",
+                    href: "/contact",
+                    icon: Phone,
+                    bgColor: "bg-gradient-to-br from-rose-400/90 to-red-500/90",
+                    hoverBgColor: "group-hover:from-rose-300 group-hover:to-red-400",
+                    borderColors: "from-rose-400 via-red-500 to-pink-500"
+                  },
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 1.2 + (index * 0.1),
+                      ease: [0.22, 1, 0.36, 1]
+                    }}
+                    whileHover={{ scale: 1.15, y: -8 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative"
+                  >
+                    <Link href={item.href}>
+                      <div className={cn(
+                        "group relative flex flex-col items-center gap-2 cursor-pointer"
+                      )}>
+                        {/* Animated multicolor border ring */}
+                        <div className="relative w-16 h-16 md:w-20 md:h-20">
+                          {/* Rotating gradient border wrapper */}
+                          <div
+                            className={cn(
+                              "absolute inset-0 rounded-full animate-rotate-gradient",
+                              "opacity-75 group-hover:opacity-100",
+                              "transition-opacity duration-500",
+                              "p-[3px]"
+                            )}
+                            style={{
+                              background: (() => {
+                                const colors = item.borderColors.split(' ');
+                                const colorMap: Record<string, string> = {
+                                  'from-amber-400': '#fbbf24',
+                                  'via-yellow-500': '#eab308',
+                                  'to-orange-500': '#f97316',
+                                  'from-blue-400': '#60a5fa',
+                                  'via-cyan-500': '#06b6d4',
+                                  'to-teal-500': '#14b8a6',
+                                  'from-green-400': '#4ade80',
+                                  'via-emerald-500': '#10b981',
+                                  'from-purple-400': '#a78bfa',
+                                  'via-pink-500': '#ec4899',
+                                  'to-rose-500': '#f43f5e',
+                                  'from-indigo-400': '#818cf8',
+                                  'via-violet-500': '#8b5cf6',
+                                  'to-purple-500': '#a855f7',
+                                  'from-rose-400': '#fb7185',
+                                  'via-red-500': '#ef4444',
+                                  'to-pink-500': '#ec4899',
+                                };
+                                const mappedColors = colors.map(c => colorMap[c] || c).filter(Boolean);
+                                return `conic-gradient(from 0deg, ${mappedColors.join(', ')})`;
+                              })(),
+                            }}
+                          >
+                            <div className="w-full h-full rounded-full bg-background" />
+                          </div>
+
+                          {/* Button container with shining color */}
+                          <div className={cn(
+                            "absolute inset-[3px] rounded-full flex items-center justify-center",
+                            "shadow-2xl backdrop-blur-sm",
+                            "transition-all duration-500",
+                            item.bgColor,
+                            item.hoverBgColor,
+                            "group-hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]",
+                            "group-hover:scale-105"
+                          )}>
+                            {/* Inner glow effect */}
+                            <div className="absolute inset-0 rounded-full bg-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
+
+                            {/* Shine effect */}
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                            <item.icon className="relative z-10 w-7 h-7 md:w-8 md:h-8 text-white group-hover:scale-125 group-hover:rotate-12 transition-all duration-300 drop-shadow-lg" />
+                          </div>
+                        </div>
+
+                        <span className="text-white/90 text-xs md:text-sm font-medium group-hover:text-white transition-colors duration-300 whitespace-nowrap drop-shadow-md">
+                          {item.name}
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-12 bg-primary text-white relative overflow-hidden">
-          <motion.div
-            className="container"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-          >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-white/20">
-              {[
-                { count: 100, label: "Free Students", suffix: "+" },
-                { count: 300, label: "Video Lectures", suffix: "+" },
-                { count: 20, label: "Expert Teachers", suffix: "+" },
-                { count: 100, label: "Merit Based", suffix: "%" }
-              ].map((stat, i) => (
-                <motion.div key={i} variants={fadeInUp} className="p-4 group hover:-translate-y-1 transition-transform duration-300">
-                  <div className="text-4xl md:text-5xl font-bold text-secondary mb-2">
-                    <AnimatedCounter to={stat.count} suffix={stat.suffix} />
-                  </div>
-                  <div className="text-sm opacity-90 font-medium">{stat.label}</div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+        {/* Video Section */}
+        <section className="py-20 bg-gradient-to-b from-background to-muted/30">
+          <div className="container max-w-5xl mx-auto px-4">
+            <motion.div
+              ref={videoRef}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="space-y-8"
+            >
+              <motion.div variants={fadeInUp} className="text-center space-y-4">
+                <h2 className="text-4xl font-bold text-primary">Watch Our Story</h2>
+                <div className="w-20 h-1 bg-secondary rounded-full mx-auto" />
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                  Discover the journey of Marifat Ul Quran and how we're shaping the future of Islamic education.
+                </p>
+              </motion.div>
+
+              <motion.div
+                variants={fadeInUp}
+                className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black"
+                style={{ aspectRatio: "16/9" }}
+              >
+                <iframe
+                  src={videoSrc}
+                  title="Marifat Ul Quran - Our Story"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                  style={{ border: 0 }}
+                />
+              </motion.div>
+            </motion.div>
+          </div>
         </section>
 
         {/* About Section */}
@@ -206,7 +377,6 @@ export default function Home() {
         </section>
 
 
-
         {/* Courses Section */}
         <section className="py-20 relative">
           <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: `url(${pattern})` }} />
@@ -251,6 +421,9 @@ export default function Home() {
             </div>
           </motion.div>
         </section>
+
+        {/* Course Gallery Section */}
+        <CourseGallery />
 
         {/* FAQ Section */}
         <section className="py-20 bg-background">
@@ -343,7 +516,7 @@ export default function Home() {
             viewport={{ once: true }}
             variants={staggerContainer}
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-heading font-bold">Begin Your Journey of Sacred Knowledge</motion.h2>
+            <motion.h2 variants={fadeInUp} className="text-4xl md:text-5xl font-heading font-bold text-secondary">Begin Your Journey of Sacred Knowledge</motion.h2>
             <motion.p variants={fadeInUp} className="text-xl opacity-90 max-w-2xl mx-auto">
               Enrollment for the new academic session is now open. Join a community of thousands of students dedicated to the Deen.
             </motion.p>

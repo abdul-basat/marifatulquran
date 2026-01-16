@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, BookOpen, GraduationCap, Phone, Info, Home, Facebook, Twitter, Youtube, Instagram, FileText } from "lucide-react";
+import { Menu, X, BookOpen, GraduationCap, Phone, Info, Facebook, MessageCircle, Youtube, Instagram, FileText, Images } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
@@ -11,13 +11,15 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { name: "Home", href: "/", icon: Home },
-    { name: "About", href: "/about", icon: Info },
-    { name: "Admissions", href: "/admissions", icon: BookOpen },
     { name: "Courses", href: "/courses", icon: GraduationCap },
+    { name: "Admissions", href: "/admissions", icon: BookOpen },
+    { name: "Gallery", href: "/gallery", icon: Images },
     { name: "Results", href: "/results", icon: FileText },
+    { name: "About", href: "/about", icon: Info },
     { name: "Contact", href: "/contact", icon: Phone },
   ];
+
+  const isLandingPage = location === "/";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -31,22 +33,30 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href}>
-              <span className={cn(
-                "text-sm font-medium transition-colors hover:text-primary cursor-pointer",
-                location === item.href ? "text-primary font-bold border-b-2 border-secondary" : "text-muted-foreground"
-              )}>
-                {item.name}
-              </span>
-            </Link>
-          ))}
+        {/* Desktop Nav - Show on all pages EXCEPT landing page */}
+        {!isLandingPage && (
+          <nav className="hidden md:flex items-center gap-6">
+            {navItems.map((item) => (
+              <Link key={item.href} href={item.href}>
+                <span className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary cursor-pointer",
+                  location === item.href ? "text-primary font-bold border-b-2 border-secondary" : "text-muted-foreground"
+                )}>
+                  {item.name}
+                </span>
+              </Link>
+            ))}
+          </nav>
+        )}
+
+        {/* Apply Now Button - Show on all pages (Desktop) */}
+        <div className="hidden md:block">
           <Link href="/admissions">
-            <Button className="bg-primary hover:bg-primary/90 text-white shadow-md font-bold">Apply Now</Button>
+            <Button className="font-bold shadow-sm" size="lg">
+              Apply Now
+            </Button>
           </Link>
-        </nav>
+        </div>
 
         {/* Mobile Nav */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -91,8 +101,8 @@ export default function Header() {
               <Separator className="bg-secondary/30" />
               <div className="flex justify-center gap-6 py-2">
                 <a href="https://www.facebook.com/profile.php?id=61560569426109" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Facebook className="h-5 w-5" /></a>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Twitter className="h-5 w-5" /></a>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Youtube className="h-5 w-5" /></a>
+                <a href="https://wa.me/923181955634" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><MessageCircle className="h-5 w-5" /></a>
+                <a href="https://www.youtube.com/@MadinaMunawra-m7s" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors"><Youtube className="h-5 w-5" /></a>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors"><Instagram className="h-5 w-5" /></a>
               </div>
               <Link href="/admissions" onClick={() => setIsOpen(false)}>
