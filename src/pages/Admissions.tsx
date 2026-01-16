@@ -99,7 +99,7 @@ export default function Admissions() {
         <section className="py-20 bg-background">
           <div className="container px-4">
             <motion.div
-              {...fadeInUp}
+              {...(fadeInUp as any)}
               className="flex flex-col md:flex-row gap-8 items-center max-w-5xl mx-auto bg-amber-50/50 p-10 rounded-3xl border border-amber-100 shadow-sm relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 p-4 opacity-5">
@@ -122,7 +122,7 @@ export default function Admissions() {
         <section className="py-24 bg-muted/20 relative">
           <div className="container px-4">
             <motion.div
-              {...fadeInUp}
+              {...(fadeInUp as any)}
               className="text-center mb-20"
             >
               <h2 className="text-4xl md:text-6xl font-heading font-bold mb-6">Our Admission Process</h2>
@@ -132,7 +132,7 @@ export default function Admissions() {
               {processSteps.map((p, i) => (
                 <motion.div
                   key={i}
-                  {...fadeInUp}
+                  {...(fadeInUp as any)}
                   transition={{ delay: i * 0.15, duration: 0.8 }}
                   className="relative group"
                 >
@@ -163,7 +163,7 @@ export default function Admissions() {
             <div className="grid lg:grid-cols-5 gap-20 max-w-7xl mx-auto">
               {/* Requirements Column */}
               <div className="lg:col-span-2 space-y-16">
-                <motion.div {...fadeInUp}>
+                <motion.div {...(fadeInUp as any)}>
                   <h3 className="text-4xl font-bold text-primary mb-10 border-l-8 border-secondary pl-6">Requirements</h3>
                   <div className="space-y-6">
                     {[
@@ -187,7 +187,7 @@ export default function Admissions() {
                   </div>
                 </motion.div>
 
-                <motion.div {...fadeInUp} transition={{ delay: 0.3 }}>
+                <motion.div {...(fadeInUp as any)} transition={{ delay: 0.3 }}>
                   <Card className="bg-primary text-primary-foreground overflow-hidden rounded-[2rem] shadow-2xl relative">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                       <Download className="h-40 w-40" />
