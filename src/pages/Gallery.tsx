@@ -8,23 +8,25 @@ import {
   Dialog,
   DialogContent,
   DialogOverlay,
+  DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { courseImages, getCourseImageUrl } from "@/config/courseGallery";
 import { cn } from "@/lib/utils";
 import SEO from "@/components/SEO";
-import pattern from "@/assets/pattern.jpg";
+import pattern from "@/assets/pattern.webp";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 50, scale: 0.95 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
+  visible: {
+    opacity: 1,
+    y: 0,
     scale: 1,
-    transition: { 
-      duration: 0.7, 
-      ease: [0.22, 1, 0.36, 1] 
-    } 
+    transition: {
+      duration: 0.7,
+      ease: [0.22, 1, 0.36, 1]
+    }
   }
 };
 
@@ -55,7 +57,7 @@ export default function Gallery() {
 
   const navigateImage = (direction: "prev" | "next") => {
     if (selectedImage === null) return;
-    
+
     if (direction === "next") {
       setSelectedImage((selectedImage + 1) % courseImages.length);
     } else {
@@ -71,9 +73,9 @@ export default function Gallery() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SEO 
-        title="Course Gallery - معرفۃ القرآن" 
-        description="Browse all course posters and announcements from Marifat Ul Quran - معرفۃ القرآن للبنین و للبنات" 
+      <SEO
+        title="Course Gallery - معرفۃ القرآن"
+        description="Browse all course posters and announcements from Marifat Ul Quran - معرفۃ القرآن للبنین و للبنات"
       />
       <Header />
 
@@ -83,9 +85,9 @@ export default function Gallery() {
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url(${pattern})` }} />
           <div className="container relative z-10 text-center">
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
               className="text-4xl md:text-6xl font-heading font-bold mb-4"
             >
               Course Posters Gallery
@@ -93,11 +95,12 @@ export default function Gallery() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
               className="text-lg opacity-90 max-w-3xl mx-auto"
             >
               Explore our comprehensive range of Islamic courses and programs
             </motion.p>
+
           </div>
         </section>
 
@@ -166,6 +169,10 @@ export default function Gallery() {
           onKeyDown={handleKeyDown}
           showCloseButton={false}
         >
+          <DialogTitle className="sr-only">Course Image Viewer</DialogTitle>
+          <DialogDescription className="sr-only">
+            Viewing full screen version of course poster.
+          </DialogDescription>
           {selectedImage !== null && (
             <div className="relative w-full h-full flex items-center justify-center">
               {/* Close Button */}

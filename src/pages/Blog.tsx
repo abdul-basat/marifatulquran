@@ -3,11 +3,11 @@ import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, User, ArrowRight } from "lucide-react";
-import pattern from "@/assets/pattern.jpg";
+import pattern from "@/assets/pattern.webp";
 import SEO from "@/components/SEO";
 import campus from "@/assets/campus.jpg";
 import scholar1 from "@/assets/scholar1.jpg";
-import studentMale from "@/assets/student-male.jpg";
+import studentMale from "@/assets/student-male.webp";
 
 export default function Blog() {
    const posts = [

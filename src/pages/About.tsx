@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import pattern from "@/assets/pattern.jpg";
+import pattern from "@/assets/pattern.webp";
 import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
@@ -111,25 +111,27 @@ export default function About() {
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url(${pattern})` }} />
 
           <div className="container relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center space-y-6"
-            >
+            <div className="text-center space-y-6">
               {/* Institution Name */}
               <div dir="rtl" className="space-y-4">
-                <h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold leading-tight outline-none focus:outline-none" style={{ outline: 'none' }}>
+                <motion.h1
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{ duration: 0.7, ease: "easeOut" }}
+                  className="text-3xl md:text-5xl lg:text-6xl font-heading font-bold leading-tight outline-none focus:outline-none"
+                  style={{ outline: 'none' }}
+                >
                   ادارہ معرفۃُ القرآن للبنین و للبنات
-                </h1>
+                </motion.h1>
                 <div className="flex flex-wrap items-center justify-center gap-4 text-sm md:text-base">
                   <motion.span
                     className="relative group"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
+                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
                     whileHover={{ scale: 1.05 }}
                   >
+
                     {/* Multicolor Glowing Border Animation - Outside Only */}
                     <motion.div
                       className="absolute -inset-1 rounded-full -z-10"
@@ -187,9 +189,9 @@ export default function About() {
                   </motion.span>
                   <motion.span
                     className="relative group"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
+                    initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
                     whileHover={{ scale: 1.05 }}
                   >
                     {/* Multicolor Glowing Border Animation - Outside Only */}
@@ -249,7 +251,8 @@ export default function About() {
                   </motion.span>
                 </div>
               </div>
-            </motion.div>
+            </div>
+
           </div>
         </section>
 

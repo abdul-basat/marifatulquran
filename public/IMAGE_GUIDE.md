@@ -3,7 +3,7 @@
 Welcome! This guide will help you easily replace images on the Maarifatul Quran website without touching any code.
 
 ## About Maarifatul Quran
-This website is for an **online female Islamic academy** dedicated to teaching Quranic knowledge and Islamic studies to women. All images should reflect this identity - featuring female students, scholars, and an Islamic learning environment.
+This website is for an **online Islamic academy** dedicated to teaching Quranic knowledge and Islamic studies. While we have a strong focus on female education, we also serve male students in specific programs (Hifz, short courses, etc.). Images should reflect this inclusive Islamic learning environment.
 
 ## Directory Structure
 
@@ -14,15 +14,17 @@ public/images/
 ├── logo/           # Academy logo and branding
 ├── hero/           # Background images for hero sections
 ├── people/         # Scholar and student photos
-└── campus/         # Campus and learning environment photos
+├── campus/         # Campus and learning environment photos
 ```
 
 ## How to Replace Images
 
 ### Step 1: Prepare Your Image
-- Use high-quality images (preferably JPG or PNG format)
+- **Recommended Format: WebP** (Best balance of quality & compatibility)
+- **Alternative: AVIF** (Best compression, but slightly less compatible on very old devices)
+- **Legacy: JPG/PNG** (Use only if necessary; files are much larger)
 - Follow the recommended dimensions below
-- Ensure images reflect the academy's identity as a female-focused Islamic learning institution
+- Ensure images reflect the academy's Islamic identity
 - Use appropriate, modest imagery aligned with Islamic values
 
 ### Step 2: Replace the File
@@ -61,7 +63,7 @@ npm run build
   - Tip: Islamic geometric patterns work well
 
 ### People (`public/images/people/`)
-These images should feature female students and scholars in an Islamic learning context:
+These images should feature students and scholars in an Islamic learning context:
 
 - **scholar1.jpg** - Featured scholar/teacher 1
   - Recommended size: 600x600px (square or portrait)
@@ -74,13 +76,13 @@ These images should feature female students and scholars in an Islamic learning 
   - Recommended size: 800x600px
   - Should depict online learning or Quranic study
   
-- **student-male.jpg** - Alternative student photo
+- **student-male.jpg** - Male student photo
   - Recommended size: 800x1200px
-  - **Note**: Consider replacing with female student image to maintain academy identity
+  - Used in testimonials for Hifz/Short courses
   
-- **student-male-2.jpg** - Alternative student photo 2
+- **student-male-2.jpg** - Alternative male student photo
   - Recommended size: 800x1200px
-  - **Note**: Consider replacing with female student image to maintain academy identity
+  - Used in testimonials for Alumni
   
 - **student-grad.jpg** - Graduation/achievement photo
   - Recommended size: 800x600px

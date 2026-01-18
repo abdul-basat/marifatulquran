@@ -13,15 +13,26 @@ import {
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import heroBgLight from "@/assets/hero-bg-light.png";
-import pattern from "@/assets/pattern.jpg";
+import heroBgLight from "@/assets/hero-bg-light.webp";
+import pattern from "@/assets/pattern.webp";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import onlineLearning from "@/assets/online-learning.jpg";
 import campus from "@/assets/campus.jpg";
 
-import studentMale from "@/assets/student-male.jpg";
-import studentMale2 from "@/assets/student-male-2.jpg";
-import studentFemale from "@/assets/student-female.jpg";
+import studentMale from "@/assets/student-male.webp";
+import studentMale2 from "@/assets/student-male-2.webp";
+import studentFemale from "@/assets/student-female.webp";
+import studentGrad from "@/assets/student-grad.webp";
+
+import Autoplay from "embla-carousel-autoplay";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import SEO from "@/components/SEO";
 import CourseGallery from "@/components/CourseGallery";
 import { cn } from "@/lib/utils";
@@ -65,35 +76,105 @@ export default function Home() {
 
   const headingText = "Marifat Ul Quran".split(" ");
   const videoRef = useRef<HTMLDivElement>(null);
-  const [shouldAutoplay, setShouldAutoplay] = useState(false);
+  const playerRef = useRef<any>(null);
+  const [hasAutoPlayed, setHasAutoPlayed] = useState(false);
+  const isInViewRef = useRef(false);
+
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
+
+  useEffect(() => {
+    // Load YouTube Iframe API
+    if (!(window as any).YT) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+    }
+
+    const onPlayerReady = (event: any) => {
+      if (isInViewRef.current && !hasAutoPlayed) {
+        event.target.playVideo();
+        setHasAutoPlayed(true);
+      }
+    };
+
+    const initPlayer = () => {
+      playerRef.current = new (window as any).YT.Player('youtube-player', {
+        videoId: 'frZkUdcFUuE',
+        playerVars: {
+          'playsinline': 1,
+          'modestbranding': 1,
+          'rel': 0,
+          'controls': 1,
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': (event: any) => {
+            // Optional: Handle state changes if needed
+          }
+        }
+      });
+    };
+
+    if ((window as any).YT && (window as any).YT.Player) {
+      initPlayer();
+    } else {
+      (window as any).onYouTubeIframeAPIReady = initPlayer;
+    }
+
+    return () => {
+      if (playerRef.current && playerRef.current.destroy) {
+        playerRef.current.destroy();
+      }
+    };
+  }, []); // Empty dependency array to run once
+
+  useEffect(() => {
+    const node = videoRef.current;
+    if (!node) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !shouldAutoplay) {
-            setShouldAutoplay(true);
+          isInViewRef.current = entry.isIntersecting;
+          if (entry.isIntersecting) {
+            // Only autoplay if it hasn't played automatically yet
+            if (!hasAutoPlayed && playerRef.current && playerRef.current.playVideo) {
+              playerRef.current.playVideo();
+              setHasAutoPlayed(true);
+            }
+          } else {
+            // Pause when scrolled away
+            if (playerRef.current && playerRef.current.pauseVideo) {
+              playerRef.current.pauseVideo();
+            }
           }
         });
       },
       { threshold: 0.5 }
     );
 
-    if (videoRef.current) {
-      observer.observe(videoRef.current);
-    }
+    observer.observe(node);
 
     return () => {
-      if (videoRef.current) {
-        observer.unobserve(videoRef.current);
-      }
+      observer.unobserve(node);
     };
-  }, [shouldAutoplay]);
-
-  const videoId = "frZkUdcFUuE";
-  const videoSrc = shouldAutoplay
-    ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`
-    : `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
+  }, [hasAutoPlayed]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -154,7 +235,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 1.0 }}
               className="mt-12"
             >
-              <p className="text-center text-white/90 text-sm mb-6 font-medium">Quick Navigation</p>
+
               <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                 {[
                   {
@@ -295,43 +376,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Video Section */}
-        <section className="py-20 bg-gradient-to-b from-background to-muted/30">
-          <div className="container max-w-5xl mx-auto px-4">
-            <motion.div
-              ref={videoRef}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={staggerContainer}
-              className="space-y-8"
-            >
-              <motion.div variants={fadeInUp} className="text-center space-y-4">
-                <h2 className="text-4xl font-bold text-primary">Watch Our Story</h2>
-                <div className="w-20 h-1 bg-secondary rounded-full mx-auto" />
-                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                  Discover the journey of Marifat Ul Quran and how we're shaping the future of Islamic education.
-                </p>
-              </motion.div>
-
-              <motion.div
-                variants={fadeInUp}
-                className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black"
-                style={{ aspectRatio: "16/9" }}
-              >
-                <iframe
-                  src={videoSrc}
-                  title="Marifat Ul Quran - Our Story"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                  style={{ border: 0 }}
-                />
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
-
         {/* About Section */}
         <section className="py-20 overflow-hidden">
           <div className="container">
@@ -371,6 +415,36 @@ export default function Home() {
               <motion.div variants={driftInRight} className="relative">
                 <div className="absolute -inset-4 bg-secondary/20 rounded-xl transform rotate-3" />
                 <img src={campus} alt="Campus Life" className="relative rounded-xl shadow-xl w-full object-cover aspect-video hover:scale-[1.02] transition-transform duration-700 ease-out" />
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Video Section */}
+        <section className="py-20 bg-gradient-to-b from-background to-muted/30">
+          <div className="container max-w-5xl mx-auto px-4">
+            <motion.div
+              ref={videoRef}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-100px" }}
+              variants={staggerContainer}
+              className="space-y-8"
+            >
+              <motion.div variants={fadeInUp} className="text-center space-y-4">
+                <h2 className="text-4xl font-bold text-primary">Watch Our Story</h2>
+                <div className="w-20 h-1 bg-secondary rounded-full mx-auto" />
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                  Discover the journey of Marifat Ul Quran and how we're shaping the future of Islamic education.
+                </p>
+              </motion.div>
+
+              <motion.div
+                variants={fadeInUp}
+                className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black"
+                style={{ aspectRatio: "16/9" }}
+              >
+                <div id="youtube-player" className="absolute inset-0 w-full h-full" />
               </motion.div>
             </motion.div>
           </div>
@@ -475,33 +549,68 @@ export default function Home() {
               <motion.p variants={fadeInUp} className="text-muted-foreground">Hear from our students and alumni about their journey.</motion.p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { name: "Ahmed Ali", role: "Dars-e-Nizami Student", img: studentMale, quote: "The environment here is spiritually uplifting. The teachers don't just teach books; they teach character. It has been a transformative experience for me." },
-                { name: "Fatima Zahra", role: "Online Tajweed Graduate", img: studentFemale, quote: "As a working professional, the online flexibility was perfect. I can finally recite the Quran correctly. The female tutors are incredibly patient and qualified." },
-                { name: "Umar Farooq", role: "Hifz-ul-Quran Alumni", img: studentMale2, quote: "Completing my Hifz at Marifat Ul Quran was the best decision of my life. The focus on Tajweed and revision ensured I never forget what I memorized." }
-              ].map((student, i) => (
-                <motion.div key={i} variants={fadeInUp} className="h-full">
-                  <Card className="p-6 border-none shadow-md bg-white relative h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
-                    <Quote className="absolute top-6 right-6 h-8 w-8 text-secondary/20" />
-                    <div className="flex items-center gap-4 mb-4">
-                      <img src={student.img} alt={student.name} className="w-16 h-16 rounded-full object-cover border-2 border-secondary" />
-                      <div>
-                        <h4 className="font-bold text-primary">{student.name}</h4>
-                        <p className="text-xs text-muted-foreground">{student.role}</p>
-                      </div>
-                    </div>
-                    <p className="text-muted-foreground italic flex-1">
-                      "{student.quote}"
-                    </p>
-                    <div className="flex gap-1 mt-4 text-secondary">
-                      {[1, 2, 3, 4, 5].map((_, starI) => (
-                        <Star key={starI} className="h-4 w-4 fill-current" />
-                      ))}
-                    </div>
-                  </Card>
-                </motion.div>
-              ))}
+            <div className="px-12 relative">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                plugins={[
+                  Autoplay({
+                    delay: 5000,
+                    stopOnInteraction: false,
+                  }),
+                ]}
+                setApi={setApi}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-4 py-4">
+                  {[
+                    { name: "Ahmed Ali", role: "Dars-e-Nizami Student", img: studentMale, quote: "The environment here is spiritually uplifting. The teachers don't just teach books; they teach character. It has been a transformative experience for me." },
+                    { name: "Fatima Zahra", role: "Online Tajweed Graduate", img: studentFemale, quote: "As a working professional, the online flexibility was perfect. I can finally recite the Quran correctly. The female tutors are incredibly patient and qualified." },
+                    { name: "Umar Farooq", role: "Hifz-ul-Quran Alumni", img: studentMale2, quote: "Completing my Hifz at Marifat Ul Quran was the best decision of my life. The focus on Tajweed and revision ensured I never forget what I memorized." },
+                    { name: "Zainab Bibi", role: "Parent of Hifz Student", img: studentFemale, quote: "I am amazed by the progress my son has made. Not just in memorization, but his adab and akhlaq have improved tremendously. The teachers are very caring." },
+                    { name: "Yusuf Khan", role: "Short Course Participant", img: studentMale, quote: "The Seerat-un-Nabi course opened my eyes. It was concise yet so deep. Highly recommended for anyone wanting to connect with the Prophet's (PBUH) life." },
+                    { name: "Aisha Siddiqa", role: "Online Alimah Student", img: studentGrad, quote: "Distance learning here feels like being on campus. The live sessions are interactive, and the recording availability helps when I miss a class. A true blessing." }
+                  ].map((student, i) => (
+                    <CarouselItem key={i} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                      <motion.div variants={fadeInUp} className="h-full">
+                        <Card className="p-6 border-none shadow-md bg-white relative h-full flex flex-col hover:shadow-xl transition-shadow duration-300">
+                          <Quote className="absolute top-6 right-6 h-8 w-8 text-secondary/20" />
+                          <div className="flex items-center gap-4 mb-4">
+                            <img src={student.img} alt={student.name} className="w-16 h-16 rounded-full object-cover border-2 border-secondary" />
+                            <div>
+                              <h4 className="font-bold text-primary">{student.name}</h4>
+                              <p className="text-xs text-muted-foreground">{student.role}</p>
+                            </div>
+                          </div>
+                          <p className="text-muted-foreground italic flex-1">
+                            "{student.quote}"
+                          </p>
+                          <div className="flex gap-1 mt-4 text-secondary">
+                            {[1, 2, 3, 4, 5].map((_, starI) => (
+                              <Star key={starI} className="h-4 w-4 fill-current" />
+                            ))}
+                          </div>
+                        </Card>
+                      </motion.div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+              <div className="flex justify-center gap-2 mt-8">
+                {Array.from({ length: count }).map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${index + 1 === current ? "bg-secondary w-8" : "bg-primary/20 hover:bg-primary/40"
+                      }`}
+                    onClick={() => api?.scrollTo(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </motion.div>
         </section>

@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Clock, BookOpen, Wifi, Users, Banknote, Globe, Phone, User, CheckCircle2, Info, Eye } from "lucide-react";
+import { Clock, BookOpen, Wifi, Users, Banknote, Globe, Phone, User, CheckCircle2, Info, Eye, X, ArrowLeft } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -10,7 +10,18 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogClose,
 } from "@/components/ui/dialog";
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetDescription,
+    SheetTrigger,
+    SheetClose,
+} from "@/components/ui/sheet";
+import { useState } from "react";
 
 export interface CourseData {
     name: string;
@@ -32,6 +43,7 @@ interface CourseCardProps {
 }
 
 export default function CourseCard({ course }: CourseCardProps) {
+    const [isOpen, setIsOpen] = useState(false);
     const whatsappNumber = "923181955634";
 
     const getWhatsAppLink = (courseName: string) => {
@@ -39,7 +51,63 @@ export default function CourseCard({ course }: CourseCardProps) {
         return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     };
 
-    const courseImage = course.image ? `/images/courses/${course.image}` : "/images/hero-bg-light.png";
+    const courseImage = course.image
+        ? `/images/courses/${course.image.replace(/\.jpg$/, '.webp')}`
+        : "/images/hero-bg-light.webp";
+
+    const courseDetails = [
+        { label: "مدت", value: course.duration, icon: Clock, color: "text-secondary", bg: "bg-secondary/10" },
+        { label: "اہلیت", value: course.eligibility, icon: User, color: "text-blue-500", bg: "bg-blue-50" },
+        { label: "طریقہ کار", value: course.mode, icon: Wifi, color: "text-emerald-500", bg: "bg-emerald-50" },
+        { label: "اساتذہ", value: course.teachers || "دستیاب", icon: Users, color: "text-purple-500", bg: "bg-purple-50" },
+        { label: "فیس", value: course.fee || "معلومات کے لیے رابطہ کریں", icon: Banknote, color: "text-amber-500", bg: "bg-amber-50" },
+        { label: "زبان", value: course.language || "اردو", icon: Globe, color: "text-indigo-500", bg: "bg-indigo-50" },
+    ];
+
+    // Shared Content for both Dialog and Sheet
+    const ModalContent = ({ isMobile = false }: { isMobile?: boolean }) => (
+        <>
+            {/* Course Title & Description */}
+            <div className="space-y-4" dir="rtl">
+                <h2 className={`${isMobile ? 'text-2xl' : 'text-3xl md:text-4xl'} font-bold text-primary leading-tight`} style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>
+                    {course.name}
+                </h2>
+                <div className="w-24 h-1.5 bg-secondary rounded-full" />
+            </div>
+
+            <p className={`${isMobile ? 'text-lg' : 'text-xl md:text-2xl'} text-muted-foreground leading-relaxed text-right py-2 opacity-90`} dir="rtl" style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>
+                {course.description}
+            </p>
+
+            {/* Details Grid */}
+            <div className="grid grid-cols-2 gap-3 mt-4">
+                {courseDetails.map((detail, i) => (
+                    <div key={i} className="flex items-center justify-end gap-3 p-3 rounded-xl border border-primary/5 bg-muted/30 hover:bg-muted/50 transition-all group/detail" dir="rtl">
+                        <div className="flex-1 text-right">
+                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-0.5">{detail.label}</p>
+                            <p className="text-sm font-bold text-primary leading-tight" style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>{detail.value}</p>
+                        </div>
+                        <div className={`p-2.5 rounded-xl ${detail.bg} ${detail.color} group-hover/detail:scale-110 transition-transform`}>
+                            <detail.icon className="w-4 h-4" />
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* WhatsApp Button */}
+            <div className="pt-6">
+                <Button
+                    className="w-full bg-primary hover:bg-primary/90 text-white shadow-xl py-6 text-xl font-bold rounded-xl transition-all hover:scale-[1.01]"
+                    asChild
+                >
+                    <a href={getWhatsAppLink(course.name)} target="_blank" rel="noopener noreferrer" className="flex gap-3 items-center justify-center">
+                        <Phone className="w-5 h-5" />
+                        <span style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>ابھی رابطہ کریں</span>
+                    </a>
+                </Button>
+            </div>
+        </>
+    );
 
     return (
         <Card className="group relative flex flex-col h-full overflow-hidden rounded-[2rem] border-0 bg-background shadow-lg transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
@@ -51,7 +119,7 @@ export default function CourseCard({ course }: CourseCardProps) {
                 <div className="absolute inset-x-0 top-0 h-40 sm:h-44 z-0">
                     <img
                         src={courseImage}
-                        alt=""
+                        alt={`${course.name} - ${course.description}`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 opacity-50 group-hover:opacity-70"
                     />
                     {/* Aggressive Gradient Mask - Stronger fade at bottom */}
@@ -123,82 +191,100 @@ export default function CourseCard({ course }: CourseCardProps) {
             </CardContent>
 
             <CardFooter className="pt-2 pb-8 flex gap-3 px-7">
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button
-                            variant="default"
-                            className="flex-1 flex gap-2 items-center bg-primary hover:bg-primary/90 text-white border-none shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 rounded-xl py-6"
-                            style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}
-                        >
-                            <Eye className="w-4 h-4" />
-                            تفصیل دیکھیں
-                        </Button>
-                    </DialogTrigger>
-                    {/* ... DialogContent remains the same ... */}
-                    <DialogContent className="max-w-[95vw] md:max-w-5xl lg:max-w-7xl p-0 overflow-hidden bg-background border-none shadow-2xl">
-                        <div className="flex flex-col md:grid md:grid-cols-[1.1fr_0.9fr] lg:grid-cols-[1.2fr_0.8fr] h-full overflow-hidden">
-                            {/* Text Content - Top on Mobile, Right on Desktop */}
-                            <div className="p-6 md:p-12 space-y-8 overflow-y-auto md:overflow-visible max-h-[55vh] md:max-h-none order-1 md:order-2 bg-background flex flex-col justify-center">
-                                <div className="space-y-4" dir="rtl">
-                                    <h2 className="text-3xl md:text-5xl font-bold text-primary leading-tight" style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>
-                                        {course.name}
-                                    </h2>
-                                    <div className="w-32 h-2 bg-secondary rounded-full" />
+                {/* Desktop Dialog - Hidden on mobile */}
+                <div className="hidden md:flex flex-1">
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button
+                                variant="default"
+                                className="w-full flex gap-2 items-center bg-primary hover:bg-primary/90 text-white border-none shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 rounded-xl py-6"
+                                style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}
+                            >
+                                <Eye className="w-4 h-4" />
+                                تفصیل دیکھیں
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-[95vw] md:max-w-4xl lg:max-w-5xl max-h-[90vh] p-0 overflow-hidden bg-background border-none shadow-2xl">
+                            <DialogTitle className="sr-only">{course.name} - Course Details</DialogTitle>
+                            <DialogDescription className="sr-only">
+                                Comprehensive details about the {course.name} course including duration, eligibility, and mode of study.
+                            </DialogDescription>
+                            <div className="flex flex-col md:flex-row h-full max-h-[90vh] overflow-hidden">
+                                {/* Image Section - Fixed height, always visible */}
+                                <div className="relative md:w-2/5 lg:w-1/2 bg-muted/20 flex items-center justify-center p-4 md:p-6 shrink-0">
+                                    <div className="relative w-full max-h-[40vh] md:max-h-[80vh] aspect-[3/4] md:aspect-auto md:h-full border-4 border-white shadow-xl rounded-lg overflow-hidden bg-white">
+                                        <img
+                                            src={courseImage}
+                                            alt={`${course.name} Course Details`}
+                                            className="w-full h-full object-contain"
+                                        />
+                                    </div>
                                 </div>
 
-                                <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed text-right py-2 opacity-90" dir="rtl" style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>
-                                    {course.description}
-                                </p>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mt-4">
-                                    {[
-                                        { label: "مدت", value: course.duration, icon: Clock, color: "text-secondary", bg: "bg-secondary/10" },
-                                        { label: "اہلیت", value: course.eligibility, icon: User, color: "text-blue-500", bg: "bg-blue-50" },
-                                        { label: "طریقہ کار", value: course.mode, icon: Wifi, color: "text-emerald-500", bg: "bg-emerald-50" },
-                                        { label: "اساتذہ", value: course.teachers || "دستیاب", icon: Users, color: "text-purple-500", bg: "bg-purple-50" },
-                                        { label: "فیس", value: course.fee || "معلومات کے لیے رابطہ کریں", icon: Banknote, color: "text-amber-500", bg: "bg-amber-50" },
-                                        { label: "زبان", value: course.language || "اردو", icon: Globe, color: "text-indigo-500", bg: "bg-indigo-50" },
-                                    ].map((detail, i) => (
-                                        <div key={i} className="flex items-center justify-end gap-3 p-4 rounded-2xl border border-primary/5 bg-muted/30 hover:bg-muted/50 transition-all group/detail" dir="rtl">
-                                            <div className="flex-1 text-right">
-                                                <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mb-1">{detail.label}</p>
-                                                <p className="text-base font-bold text-primary leading-tight" style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>{detail.value}</p>
-                                            </div>
-                                            <div className={`p-3 rounded-xl ${detail.bg} ${detail.color} group-hover/detail:scale-110 transition-transform`}>
-                                                <detail.icon className="w-5 h-5" />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-
-                                <div className="pt-8">
-                                    <Button
-                                        className="w-full bg-primary hover:bg-primary/90 text-white shadow-2xl py-8 text-2xl font-bold rounded-2xl transition-all hover:scale-[1.01]"
-                                        asChild
-                                    >
-                                        <a href={getWhatsAppLink(course.name)} target="_blank" rel="noopener noreferrer" className="flex gap-4">
-                                            <Phone className="w-7 h-7" />
-                                            <span style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>ابھی رابطہ کریں</span>
-                                        </a>
-                                    </Button>
+                                {/* Text Content - Scrollable */}
+                                <div className="flex-1 p-6 md:p-8 lg:p-10 space-y-6 overflow-y-auto">
+                                    <ModalContent />
                                 </div>
                             </div>
+                            {/* Fixed Close Button */}
+                            <DialogClose className="absolute top-3 right-3 z-50 p-2 rounded-full bg-background/80 backdrop-blur-sm shadow-md hover:bg-background transition-all">
+                                <X className="w-5 h-5 text-muted-foreground" />
+                            </DialogClose>
+                        </DialogContent>
+                    </Dialog>
+                </div>
 
-                            {/* Image Section - Bottom on Mobile, Left on Desktop */}
-                            <div className="bg-muted/20 p-4 md:p-8 order-2 md:order-1 flex items-center justify-center min-h-[350px] md:min-h-full">
-                                <div className="relative w-full h-full border-8 border-white shadow-2xl rounded-sm overflow-hidden bg-white group/frame">
+                {/* Mobile Sheet - Hidden on desktop */}
+                <div className="flex md:hidden flex-1">
+                    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                        <SheetTrigger asChild>
+                            <Button
+                                variant="default"
+                                className="w-full flex gap-2 items-center bg-primary hover:bg-primary/90 text-white border-none shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all duration-300 rounded-xl py-6"
+                                style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}
+                            >
+                                <Eye className="w-4 h-4" />
+                                تفصیل دیکھیں
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="bottom" className="h-[95dvh] rounded-t-3xl p-0 flex flex-col overflow-hidden">
+                            {/* Sticky Header */}
+                            <div className="sticky top-0 z-10 flex items-center justify-between p-4 bg-background/95 backdrop-blur-md border-b shadow-sm">
+                                <SheetClose asChild>
+                                    <Button variant="ghost" size="icon" className="rounded-full">
+                                        <ArrowLeft className="w-5 h-5" />
+                                    </Button>
+                                </SheetClose>
+                                <SheetTitle className="text-lg font-bold text-primary truncate px-4 flex-1 text-center" style={{ fontFamily: "'Mehr Nastaliq Web', 'Amiri', serif" }}>
+                                    {course.name}
+                                </SheetTitle>
+                                <SheetDescription className="sr-only">
+                                    Details for {course.name} course.
+                                </SheetDescription>
+                                <SheetClose asChild>
+                                    <Button variant="ghost" size="icon" className="rounded-full">
+                                        <X className="w-5 h-5" />
+                                    </Button>
+                                </SheetClose>
+                            </div>
+
+                            {/* Scrollable Content */}
+                            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                                {/* Full Image */}
+                                <div className="relative w-full aspect-[3/4] border-4 border-white shadow-xl rounded-lg overflow-hidden bg-white">
                                     <img
                                         src={courseImage}
-                                        alt={course.name}
-                                        className="w-full h-full object-contain transition-transform duration-700 group-hover/frame:scale-105"
+                                        alt={`${course.name} Course Full Poster`}
+                                        className="w-full h-full object-contain"
                                     />
-                                    {/* Subtle Frame Shadow */}
-                                    <div className="absolute inset-0 shadow-[inset_0px_0px_40px_rgba(0,0,0,0.05)] pointer-events-none" />
                                 </div>
+
+                                {/* Course Details */}
+                                <ModalContent isMobile />
                             </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                        </SheetContent>
+                    </Sheet>
+                </div>
 
                 <Button
                     variant="default"

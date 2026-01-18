@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import pattern from "@/assets/pattern.jpg";
+import pattern from "@/assets/pattern.webp";
 import SEO from "@/components/SEO";
 import CourseCard from "@/components/CourseCard";
 import type { CourseData } from "@/components/CourseCard";
@@ -163,14 +163,28 @@ export default function Courses() {
          <SEO title="Courses" description="Browse our academic programs including Dars-e-Nizami, Hifz-ul-Quran, Tajweed, and short Islamic courses." />
          <Header />
          <main className="flex-1">
-            {/* Page Header */}
             <section className="bg-secondary text-primary py-20 relative overflow-hidden">
                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `url(${pattern})` }} />
                <div className="container px-4 relative z-10 text-center">
-                  <h1 className="text-4xl md:text-6xl font-heading font-bold mb-4">Academic Programs</h1>
-                  <p className="text-lg opacity-90 max-w-2xl mx-auto">Explore our diverse range of courses designed to connect you with sacred knowledge.</p>
+                  <motion.h1
+                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                     animate={{ opacity: 1, scale: 1, y: 0 }}
+                     transition={{ duration: 0.7, ease: "easeOut" }}
+                     className="text-4xl md:text-6xl font-heading font-bold mb-4"
+                  >
+                     Academic Programs
+                  </motion.h1>
+                  <motion.p
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
+                     className="text-lg opacity-90 max-w-2xl mx-auto"
+                  >
+                     Explore our diverse range of courses designed to connect you with sacred knowledge.
+                  </motion.p>
                </div>
             </section>
+
 
             {/* Course Grid */}
             <section className="py-16 bg-muted/30">
