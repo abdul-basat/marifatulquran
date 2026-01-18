@@ -29,7 +29,7 @@ export default function Header() {
           <img src="/images/logo/logo.webp" alt="Marifat Ul Quran Logo" className="h-12 w-12 object-contain" />
           <div className="flex flex-col">
             <span className="font-heading text-2xl font-bold leading-none text-primary">Marifat Ul Quran</span>
-            <span className="text-xs font-medium text-muted-foreground tracking-widest uppercase">Female Online Academy</span>
+            <span className="text-xs font-medium text-muted-foreground tracking-widest uppercase">Islamic Online Academy</span>
           </div>
         </Link>
 
@@ -72,7 +72,7 @@ export default function Header() {
                 <img src="/images/logo/logo.png" alt="Logo" className="h-12 w-12 object-contain" />
                 <div className="flex flex-col">
                   <SheetTitle className="font-heading text-xl font-bold text-primary">Marifat Ul Quran</SheetTitle>
-                  <SheetDescription className="text-xs">Female Online Academy</SheetDescription>
+                  <SheetDescription className="text-xs">Islamic Online Academy</SheetDescription>
                 </div>
               </div>
               <Separator className="bg-secondary/30" />

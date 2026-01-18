@@ -77,6 +77,7 @@ export default function Home() {
   const playerRef = useRef<any>(null);
   const [hasAutoPlayed, setHasAutoPlayed] = useState(false);
   const isInViewRef = useRef(false);
+  const [youtubeLoaded, setYoutubeLoaded] = useState(false); // Lazy load YouTube
 
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
@@ -96,7 +97,9 @@ export default function Home() {
   }, [api]);
 
   useEffect(() => {
-    // Load YouTube Iframe API
+    // Only load YouTube Iframe API when user initiates playback
+    if (!youtubeLoaded) return;
+
     if (!(window as any).YT) {
       const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
@@ -142,7 +145,7 @@ export default function Home() {
         playerRef.current.destroy();
       }
     };
-  }, []); // Empty dependency array to run once
+  }, [youtubeLoaded]); // Load when user clicks to play
 
   useEffect(() => {
     const node = videoRef.current;
@@ -445,10 +448,34 @@ export default function Home() {
 
               <motion.div
                 variants={fadeInUp}
-                className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black"
+                className="relative w-full rounded-xl overflow-hidden shadow-2xl bg-black cursor-pointer group"
                 style={{ aspectRatio: "16/9" }}
+                ref={videoRef}
+                onClick={() => !youtubeLoaded && setYoutubeLoaded(true)}
               >
-                <div id="youtube-player" className="absolute inset-0 w-full h-full" />
+                {/* Lite YouTube Embed - Shows thumbnail first, loads player on click */}
+                {!youtubeLoaded ? (
+                  <>
+                    {/* YouTube thumbnail */}
+                    <img
+                      src="https://i.ytimg.com/vi/frZkUdcFUuE/maxresdefault.jpg"
+                      alt="Watch our story - Marifat Ul Quran Video"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    {/* Play button overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+                      <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                        <svg className="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                    <span className="sr-only">Click to play video</span>
+                  </>
+                ) : (
+                  <div id="youtube-player" className="absolute inset-0 w-full h-full" />
+                )}
               </motion.div>
             </motion.div>
           </div>
@@ -560,7 +587,7 @@ export default function Home() {
                   {
                     "@type": "Review",
                     "author": { "@type": "Person", "name": "Fatima Zahra" },
-                    "reviewBody": "As a working professional, the online flexibility was perfect. I can finally recite the Quran correctly. The female tutors are incredibly patient and qualified.",
+                    "reviewBody": "As a working professional, the online flexibility was perfect. I can finally recite the Quran correctly. The tutors are incredibly patient and qualified.",
                     "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
                   },
                   {
@@ -627,7 +654,7 @@ export default function Home() {
                 <CarouselContent className="-ml-4 py-4">
                   {[
                     { name: "Ahmed Ali", role: "Dars-e-Nizami Student", gender: "male", color: "from-blue-500 to-cyan-500", quote: "The environment here is spiritually uplifting. The teachers don't just teach books; they teach character. It has been a transformative experience for me." },
-                    { name: "Fatima Zahra", role: "Online Tajweed Graduate", gender: "female", color: "from-pink-500 to-rose-500", quote: "As a working professional, the online flexibility was perfect. I can finally recite the Quran correctly. The female tutors are incredibly patient and qualified." },
+                    { name: "Fatima Zahra", role: "Online Tajweed Graduate", gender: "female", color: "from-pink-500 to-rose-500", quote: "As a working professional, the online flexibility was perfect. I can finally recite the Quran correctly. The tutors are incredibly patient and qualified." },
                     { name: "Umar Farooq", role: "Hifz-ul-Quran Alumni", gender: "male", color: "from-emerald-500 to-teal-500", quote: "Completing my Hifz at Marifat Ul Quran was the best decision of my life. The focus on Tajweed and revision ensured I never forget what I memorized." },
                     { name: "Zainab Bibi", role: "Parent of Hifz Student", gender: "female", color: "from-purple-500 to-violet-500", quote: "I am amazed by the progress my son has made. Not just in memorization, but his adab and akhlaq have improved tremendously. The teachers are very caring." },
                     { name: "Yusuf Khan", role: "Short Course Participant", gender: "male", color: "from-amber-500 to-orange-500", quote: "The Seerat-un-Nabi course opened my eyes. It was concise yet so deep. Highly recommended for anyone wanting to connect with the Prophet's (PBUH) life." },

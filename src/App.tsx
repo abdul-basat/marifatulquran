@@ -7,8 +7,10 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ScrollToTop from "@/components/ScrollToTop";
 
-// Lazy load pages for better performance (code splitting)
-const Home = lazy(() => import("@/pages/Home"));
+// Home loads immediately (landing page - no delay)
+import Home from "@/pages/Home";
+
+// Other pages lazy load for better performance (code splitting)
 const About = lazy(() => import("@/pages/About"));
 const Admissions = lazy(() => import("@/pages/Admissions"));
 const Courses = lazy(() => import("@/pages/Courses"));
@@ -18,15 +20,25 @@ const Blog = lazy(() => import("@/pages/Blog"));
 const Gallery = lazy(() => import("@/pages/Gallery"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
-// Loading fallback component
+// Minimal loading indicator for lazy pages
 function PageLoader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-        <p className="text-muted-foreground text-sm">Loading...</p>
-      </div>
+      <div className="w-8 h-8 border-3 border-primary/20 border-t-primary rounded-full animate-spin" />
     </div>
+  );
+}
+
+// Wrapper for lazy components
+function LazyRoute({ component: Component, ...props }: { component: React.ComponentType; path?: string }) {
+  return (
+    <Route {...props}>
+      {() => (
+        <Suspense fallback={<PageLoader />}>
+          <Component />
+        </Suspense>
+      )}
+    </Route>
   );
 }
 
@@ -34,18 +46,21 @@ function AppRouter() {
   return (
     <Router>
       <ScrollToTop />
-      <Suspense fallback={<PageLoader />}>
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/about" component={About} />
-          <Route path="/admissions" component={Admissions} />
-          <Route path="/courses" component={Courses} />
-          <Route path="/results" component={Results} />
-          <Route path="/contact" component={Contact} />
-          <Route path="/gallery" component={Gallery} />
-          <Route component={Home} />
-        </Switch>
-      </Suspense>
+      <Switch>
+        {/* Home page loads immediately - no spinner */}
+        <Route path="/" component={Home} />
+
+        {/* Other pages lazy load with minimal spinner */}
+        <LazyRoute path="/about" component={About} />
+        <LazyRoute path="/admissions" component={Admissions} />
+        <LazyRoute path="/courses" component={Courses} />
+        <LazyRoute path="/results" component={Results} />
+        <LazyRoute path="/contact" component={Contact} />
+        <LazyRoute path="/gallery" component={Gallery} />
+
+        {/* Fallback to Home */}
+        <Route component={Home} />
+      </Switch>
     </Router>
   );
 }
