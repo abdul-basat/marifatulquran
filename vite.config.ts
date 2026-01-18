@@ -17,5 +17,27 @@ export default defineConfig({
   ],
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
   base: "./",
-  build: { outDir: "dist", emptyOutDir: true },
+  build: {
+    outDir: "dist",
+    emptyOutDir: true,
+    // Optimize for smaller bundles
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.log in production
+        drop_debugger: true,
+      },
+    },
+    rollupOptions: {
+      output: {
+        // Better code splitting
+        manualChunks: {
+          // Vendor chunks for better caching
+          "react-vendor": ["react", "react-dom"],
+          "motion": ["framer-motion"],
+          "ui": ["@radix-ui/react-dialog", "@radix-ui/react-accordion", "@radix-ui/react-select"],
+        },
+      },
+    },
+  },
 });

@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import pattern from "@/assets/pattern.webp";
+const pattern = "/images/hero/pattern.webp";
 import SEO from "@/components/SEO";
 import CourseCard from "@/components/CourseCard";
 import type { CourseData } from "@/components/CourseCard";

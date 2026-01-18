@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import pattern from "@/assets/pattern.webp";
+const pattern = "/images/hero/pattern.webp";
 import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";

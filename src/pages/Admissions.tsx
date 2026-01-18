@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertCircle, CheckCircle, Download, ArrowRight, ArrowLeft, Users, GraduationCap, Globe, Clock, ShieldCheck, FileCheck, CreditCard, UserCheck } from "lucide-react";
-import pattern from "@/assets/pattern.webp";
+const pattern = "/images/hero/pattern.webp";
 import SEO from "@/components/SEO";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion } from "framer-motion";

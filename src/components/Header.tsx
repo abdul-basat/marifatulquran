@@ -26,7 +26,7 @@ export default function Header() {
       <div className="container flex h-20 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <img src="/images/logo/logo.png" alt="Marifat Ul Quran Logo" className="h-12 w-12 object-contain" />
+          <img src="/images/logo/logo.webp" alt="Marifat Ul Quran Logo" className="h-12 w-12 object-contain" />
           <div className="flex flex-col">
             <span className="font-heading text-2xl font-bold leading-none text-primary">Marifat Ul Quran</span>
             <span className="text-xs font-medium text-muted-foreground tracking-widest uppercase">Female Online Academy</span>

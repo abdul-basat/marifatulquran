@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { courseImages, getCourseImageUrl } from "@/config/courseGallery";
 import { cn } from "@/lib/utils";
 import SEO from "@/components/SEO";
-import pattern from "@/assets/pattern.webp";
+const pattern = "/images/hero/pattern.webp";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 50, scale: 0.95 },

@@ -35,10 +35,20 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#2d7a50" />
     
-    <!-- Fonts -->
+    <!-- Fonts - Optimized with display=swap to prevent render blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Non-blocking font loading with display=swap -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <!-- Preload LCP hero image for faster loading -->
+    <link rel="preload" as="image" href="/images/hero/hero-bg-light.webp" fetchpriority="high">
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/lato/v24/S6uyw4BMUTPHjx4wXiWtFCc.woff2" crossorigin>
   </head>
   <body>
     <div id="root"></div>

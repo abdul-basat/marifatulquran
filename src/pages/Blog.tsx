@@ -3,11 +3,14 @@ import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, User, ArrowRight } from "lucide-react";
-import pattern from "@/assets/pattern.webp";
+const pattern = "/images/hero/pattern.webp";
 import SEO from "@/components/SEO";
-import campus from "@/assets/campus.jpg";
-import scholar1 from "@/assets/scholar1.jpg";
-import studentMale from "@/assets/student-male.webp";
+
+// Image paths from public/images (WebP preferred, JPG as fallback)
+const campus = "/images/campus/campus.jpg"; // TODO: Convert to WebP
+const scholar1 = "/images/people/scholar1.jpg"; // TODO: Convert to WebP
+const studentMale = "/images/people/student-male.webp";
+
 
 export default function Blog() {
    const posts = [
